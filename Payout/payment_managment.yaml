@@ -1,0 +1,343 @@
+openapi: 3.0.0
+info:
+  title: Payment Management API
+  version: 1.0.0
+  description: API for managing payments, invoices, and banking account information.
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
+
+paths:
+  /payments/GetPayoutByStoreId/{StoreId}:
+    get:
+      summary: Get payment records
+      description: Retrieves a list of payment records.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: StoreId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "12345"
+      responses:
+        '200':
+          description: A list of payment records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    paymentId:
+                      type: string
+                      description: The unique identifier for the payment.
+                      example: "payment123"
+                    orderId:
+                      type: string
+                      description: The unique identifier for the order.
+                      example: "12345"
+                    date:
+                      type: string
+                      format: date-time
+                      description: The date of the payment.
+                      example: "2024-06-05T14:48:00.000Z"
+                    amount:
+                      type: number
+                      format: float
+                      description: The amount of the payment.
+                      example: 100.00
+                    status:
+                      type: string
+                      description: The status of the payment.
+                      example: "Paid"
+                    paymentMethod:
+                      type: string
+                      description: The payment method.
+                      example: "Credit Card"
+
+
+# Get invoices by store Id
+  /invoices/GetInvoicestByOrderId/{OrderId}:
+    get:
+      summary: Get invoices
+      description: Retrieves a list of invoices.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: StoreId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "12345"
+      responses:
+        '200':
+          description: A list of invoices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    invoiceId:
+                      type: string
+                      description: The unique identifier for the invoice.
+                      example: "invoice123"
+                    date:
+                      type: string
+                      format: date-time
+                      description: The date of the invoice.
+                      example: "2024-06-05T14:48:00.000Z"
+                    amount:
+                      type: number
+                      format: float
+                      description: The amount of the invoice.
+                      example: 1000.00
+                    restaurantPayemntDetail:
+                      type: string
+                      description: The number of banking account.
+                      example: "XXXX XXXX XXXX XXXX"
+                    customerPayemntDetail:
+                      type: string
+                      description: The number of customer account.
+                      example: "XXXX XXXX XXXX XXXX"
+
+  /invoices/CreateInvoices:
+    post:
+      summary: Create invoice
+      description: Create an new invoice.
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The invoice data to create.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date-time
+                  description: The date of the invoice.
+                  example: "2024-06-05T14:48:00.000Z"
+                amount:
+                  type: number
+                  format: float
+                  description: The amount of the invoice.
+                  example: 1000.00
+                restaurantPayemntDetail:
+                  type: string
+                  description: The number of banking account.
+                  example: "XXXX XXXX XXXX XXXX"
+                customerPayemntDetail:
+                  type: string
+                  description: The number of customer account.
+                  example: "XXXX XXXX XXXX XXXX"
+      responses:
+        '200':
+          description: Invoice updated successfully
+
+
+
+  /invoices/{invoiceId}/download:
+    get:
+      summary: Re-download invoice
+      description: Re-downloads a specific invoice.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: invoiceId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "12345"
+      responses:
+        '200':
+          description: The S3 URL for files
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+
+  /bankAccountsByStoreId/{storeId}:
+    get:
+      summary: Get bank accounts
+      description: Retrieves a list of bank accounts.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of bank accounts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  BSB:
+                    type: string
+                    description: The unique identifier for the bank account.
+                    example: "111-222"
+                  bankName:
+                    type: string
+                    description: The name of the bank.
+                    example: "Bank of Example"
+                  accountNumber:
+                    type: string
+                    description: The bank account number.
+                    example: "1234567890"
+                  accountHolder:
+                    type: string
+                    description: The name of the account holder.
+                    example: "John Doe"
+
+    post:
+      summary: Add a bank account
+      description: Adds a new bank account.
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The bank account to add.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bankName:
+                  type: string
+                  description: The name of the bank.
+                  example: "Bank of Example"
+                accountNumber:
+                  type: string
+                  description: The bank account number.
+                  example: "1234567890"
+                accountHolder:
+                  type: string
+                  description: The name of the account holder.
+                  example: "John Doe"
+      responses:
+        '201':
+          description: Bank account added successfully
+
+    put:
+      summary: Update bank account
+      description: Updates an existing bank account.
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The bank account data to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bsb:
+                  type: string
+                  description: The unique identifier for the bank account.
+                  example: "111-222"
+                bankName:
+                  type: string
+                  description: The name of the bank.
+                  example: "Bank of Example"
+                accountNumber:
+                  type: string
+                  description: The bank account number.
+                  example: "1234567890"
+                accountHolder:
+                  type: string
+                  description: The name of the account holder.
+                  example: "John Doe"
+      responses:
+        '200':
+          description: Bank account updated successfully
+
+
+  /bills:
+    get:
+      summary: Get bills
+      description: Retrieves a list of bills.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of bills
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    billId:
+                      type: string
+                      description: The unique identifier for the bill.
+                      example: "bill123"
+                    date:
+                      type: string
+                      format: date-time
+                      description: The date of the bill.
+                      example: "2024-06-05T14:48:00.000Z"
+                    amount:
+                      type: number
+                      format: float
+                      description: The amount of the bill.
+                      example: 50.00
+                    status:
+                      type: string
+                      description: The status of the bill.
+                      example: "Unpaid"
+                    description:
+                      type: string
+                      description: The description of the bill.
+                      example: "Monthly subscription fee"
+
+    put:
+      summary: Update bill
+      description: Updates an existing bill.
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The bill data to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date-time
+                  description: The date of the bill.
+                  example: "2024-06-05T14:48:00.000Z"
+                amount:
+                  type: number
+                  format: float
+                  description: The amount of the bill.
+                  example: 50.00
+                status:
+                  type: string
+                  description: The status of the bill.
+                  example: "Paid"
+                description:
+                  type: string
+                  description: The description of the bill.
+                  example: "Monthly subscription fee"
+      responses:
+        '200':
+          description: Bill updated successfully

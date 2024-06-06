@@ -1,0 +1,169 @@
+openapi: 3.0.0
+info:
+  title: Marketing Management API
+  version: 1.0.0
+  description: API for managing marketing promotions, discounts, and tracking campaign performance metrics.
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
+
+paths:
+  /promotions/GetPromotionByStoreId/{StoreId}:
+    get:
+      summary: Get promotion details
+      description: Retrieves the current promotion details, including discounts and offers.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of promotion details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    promotionId:
+                      type: string
+                      description: The unique identifier for the promotion.
+                      example: "promo123"
+                    title:
+                      type: string
+                      description: The title of the promotion.
+                      example: "Buy One Get One Free"
+                    description:
+                      type: string
+                      description: The description of the promotion.
+                      example: "Get one item free when you buy one."
+                    startDate:
+                      type: string
+                      format: date-time
+                      description: The start date of the promotion.
+                      example: "2024-07-01T00:00:00.000Z"
+                    endDate:
+                      type: string
+                      format: date-time
+                      description: The end date of the promotion.
+                      example: "2024-07-31T23:59:59.000Z"
+                    discountPercentage:
+                      type: number
+                      format: float
+                      description: The discount percentage for the promotion.
+                      example: 50.0
+
+  /promotions/CreateNewPromotion:
+    post:
+      summary: Set up discounts and special offers
+      description: Sets up new discounts and special offers.
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The promotion details to set up.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title of the promotion.
+                  example: "Buy One Get One Free"
+                description:
+                  type: string
+                  description: The description of the promotion.
+                  example: "Get one item free when you buy one."
+                startDate:
+                  type: string
+                  format: date-time
+                  description: The start date of the promotion.
+                  example: "2024-07-01T00:00:00.000Z"
+                endDate:
+                  type: string
+                  format: date-time
+                  description: The end date of the promotion.
+                  example: "2024-07-31T23:59:59.000Z"
+                discountPercentage:
+                  type: number
+                  format: float
+                  description: The discount percentage for the promotion.
+                  example: 50.0
+      responses:
+        '201':
+          description: Promotion created successfully
+
+  /promotions/UpdatePromotionBypromotionId/{promotionId}:
+    put:
+      summary: Edit promotion details
+      description: Edits the details of an existing promotion.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: promotionId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "promo123"
+      requestBody:
+        description: The promotion details to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title of the promotion.
+                  example: "Buy One Get One Free"
+                description:
+                  type: string
+                  description: The description of the promotion.
+                  example: "Get one item free when you buy one."
+                startDate:
+                  type: string
+                  format: date-time
+                  description: The start date of the promotion.
+                  example: "2024-07-01T00:00:00.000Z"
+                endDate:
+                  type: string
+                  format: date-time
+                  description: The end date of the promotion.
+                  example: "2024-07-31T23:59:59.000Z"
+                discountPercentage:
+                  type: number
+                  format: float
+                  description: The discount percentage for the promotion.
+                  example: 50.0
+      responses:
+        '200':
+          description: Promotion updated successfully
+
+    
+  /promotions/DeletePromotionBypromotionId/{promotionId}:
+    delete:
+      summary: Delete a promotion
+      description: Deletes a specific promotion.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: promotionId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "promo123"
+      responses:
+        '204':
+          description: Promotion deleted successfully
+
+

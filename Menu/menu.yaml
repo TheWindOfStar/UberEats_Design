@@ -1,0 +1,257 @@
+openapi: 3.0.0
+info:
+  title: Store and Menu Management API
+  version: 1.0.0
+  description: API for managing stores and their menus.
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
+
+#Get the list of stores
+paths:
+  /GetAllStores:
+    get:
+      summary: Get a list of stores
+      description: Retrieves a list of all stores with their basic information(manager, admin, Super admin).
+      security:
+        - bearerAuth: [JWT-token]
+      responses:
+        '200':
+          description: A list of stores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    storeId:
+                      type: string
+                      description: The unique identifier for the store.
+                      example: "store123"
+                    name:
+                      type: string
+                      description: The name of the store.
+                      example: "Store A"
+                    location:
+                      type: string
+                      description: The location of the store.
+                      example: "123 Main St"
+                    status:
+                      type: string
+                      description: The operational status of the store.
+                      example: "open, close, maintainance"
+
+  
+  # Get store menu by storeId
+  /stores/GetStoreMenu/{storeId}:
+    get:
+      summary: Get menu by store type
+      description: Retrieves the menu for a store based on its type.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "store123"
+      responses:
+        '200':
+          description: The menu for the store
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  storeName: 
+                    type: string
+                    description: The name of the store.
+                  storeId:
+                    type: string
+                    description: The ID of the store.
+                    example: "123456"
+                  storeMenu:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        category:
+                          type: string
+                          description: The category of the sub-menu.
+                        subMenu:
+                          type: array
+                          items: 
+                            type: object
+                            properties:
+                              itemId:
+                                type: string
+                                description: The unique identifier for the menu item.
+                                example: "item123"
+                              itemName:
+                                type: string
+                                description: The name of the menu item.
+                                example: "Pizza"
+                              itemDescription:
+                                type: string
+                                description: A description of the menu item.
+                                example: "Delicious cheese pizza"
+                              itemPrice:
+                                type: number
+                                format: float
+                                description: The price of the menu item.
+                                example: 9.99
+                              itemPhotoURL:
+                                type: string
+                                description: The S3 URL of the item photo.
+                                example: "https://s3.amazonaws.com/bucket/item123.jpg"
+                              itemAvailabilityStatus:
+                                type: string
+                                description: The availability status of the menu item.
+                                example: "available"
+
+
+# Add a new menu item
+  /stores/{storeId}:
+    post:
+      summary: Add a menu item
+      description: Adds a new menu item to the store's menu.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "store123"
+      requestBody:
+        description: The menu item to add.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category:
+                  type: string
+                  description: The category of the menu item.
+                  example: "Main Course"
+                itemName:
+                  type: string
+                  description: The name of the menu item.
+                  example: "Burger"
+                itemDescription:
+                  type: string
+                  description: A description of the menu item.
+                  example: "Juicy beef burger"
+                itemPrice:
+                  type: number
+                  format: float
+                  description: The price of the menu item.
+                  example: 5.99
+                itemPhotoURL:
+                  type: string
+                  description: The S3 URL of the item photo.
+                  example: "https://s3.amazonaws.com/bucket/item123.jpg"
+                itemAvailabilityStatus:
+                  type: string
+                  description: The availability status of the menu item.
+                  example: "available"
+      responses:
+        '201':
+          description: Menu item added successfully
+
+
+# Update a menu item
+  /stores/AddNewMenuItem/{storeId}/{itemId}:
+    put:
+      summary: Edit a menu item
+      description: Edits an existing menu item in the store's menu.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "store123"
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "item123"
+      requestBody:
+        description: The menu item data to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                # Different category got same dish
+                category:
+                  type: string
+                  description: The category of the menu item.
+                  example: "Main Course"
+                itemName:
+                  type: string
+                  description: The name of the menu item.
+                  example: "Veggie Burger"
+                itemDescription:
+                  type: string
+                  description: A description of the menu item.
+                  example: "Delicious veggie burger"
+                itemPrice:
+                  type: number
+                  format: float
+                  description: The price of the menu item.
+                  example: 6.99
+                itemPhotoURL:
+                  type: string
+                  description: The S3 URL of the item photo.
+                  example: "https://s3.amazonaws.com/bucket/item123.jpg"
+                itemAvailabilityStatus:
+                  type: string
+                  description: The availability status of the menu item.
+                  example: "available"
+      responses:
+        '200':
+          description: Menu item updated successfully
+
+
+
+# Delete menu item 
+  /stores/DeleteMenuItem/{storeId}/{itemId}:
+    delete:
+      summary: Delete a menu item
+      description: Deletes an existing menu item from the store's menu.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "store123"
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "item123"
+      responses:
+        '204':
+          description: Menu item deleted successfully
+

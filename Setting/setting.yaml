@@ -1,0 +1,179 @@
+openapi: 3.0.0
+info:
+  title: Settings Management API
+  version: 1.0.0
+  description: API for managing settings, including notifications, general settings, and delivery settings.
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
+
+paths:
+  /settings/GetNotificationSettingByUserId/{userId}:
+    get:
+      summary: Get notification settings
+      description: Retrieves the current notification settings.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The notification settings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  smsEnabled:
+                    type: boolean
+                    description: Whether SMS notifications are enabled.
+                    example: true
+                  mobileNumber:
+                    type: string
+                    description: the number of mobile phone to recept notification.
+                    example: true
+
+
+
+  /settings/UpdateNotificationSettingByUserId/{userId}:
+    put:
+      summary: Update notification settings
+      description: Updates the notification settings.
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The notification settings to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                smsEnabled:
+                  type: boolean
+                  description: Whether SMS notifications are enabled.
+                  example: true
+                mobileNumber:
+                  type: string
+                  description: the number of mobile phone to recept notification.
+                  example: true
+      responses:
+        '200':
+          description: Notification settings updated successfully
+
+
+  /settings/GetGeneralSettingByStoreId/{StoreId}:
+    get:
+      summary: Get general settings
+      description: Retrieves the current general settings.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The general settings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customInstructionsEnabled:
+                    type: boolean
+                    description: Whether custom instructions are enabled.
+                    example: true
+                  workdaysHours:
+                    type: string
+                    description: The workdays hours.
+                    example: "09:00-18:00"
+                  holidayHours:
+                    type: string
+                    description: The holiday hours.
+                    example: "10:00-16:00"
+
+  /settings/UpdateGeneralSettingByStoreId/{StoreId}:
+    put:
+      summary: Update general settings
+      description: Updates the general settings.
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The general settings to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customInstructionsEnabled:
+                  type: boolean
+                  description: Whether custom instructions are enabled.
+                  example: true
+                workdaysHours:
+                  type: string
+                  description: The workdays hours.
+                  example: "09:00-18:00"
+                holidayHours:
+                  type: string
+                  description: The holiday hours.
+                  example: "10:00-16:00"
+      responses:
+        '200':
+          description: General settings updated successfully
+
+
+
+  /settings/GetDeliverySettingByStoreId/{StoreId}:
+    get:
+      summary: Get delivery settings
+      description: Retrieves the current delivery settings.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The delivery settings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  distance:
+                    type: integer
+                    description: The delivery coverage (Km).
+                    example: "10"
+                  deliveryFee:
+                    type: number
+                    format: float
+                    description: The delivery fee.
+                    example: 5.99
+
+
+  /settings/UpdateDeliverySettingByStoreId/{StoreId}:
+    put:
+      summary: Update delivery settings
+      description: Updates the delivery settings.
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The delivery settings to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                distance:
+                  type: integer
+                  description: The delivery distance (Km).
+                  example: "5 km"
+                deliveryFee:
+                  type: number
+                  format: float
+                  description: The delivery fee.
+                  example: 5.99
+      responses:
+        '200':
+          description: Delivery settings updated successfully

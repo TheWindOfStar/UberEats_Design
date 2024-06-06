@@ -1,0 +1,79 @@
+
+/performance-reports:
+get:
+  summary: Get performance and sales reports
+  description: Retrieves performance and sales reports.
+  security:
+    - bearerAuth: []
+  responses:
+    '200':
+      description: A list of performance and sales reports
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                reportId:
+                  type: string
+                  description: The unique identifier for the report.
+                  example: "report123"
+                title:
+                  type: string
+                  description: The title of the report.
+                  example: "Sales Report Q1"
+                metrics:
+                  type: object
+                  properties:
+                    totalSales:
+                      type: number
+                      format: float
+                      description: The total sales amount.
+                      example: 100000.00
+                    totalOrders:
+                      type: integer
+                      description: The total number of orders.
+                      example: 500
+                    customerFeedback:
+                      type: string
+                      description: Summary of customer feedback.
+                      example: "Overall positive feedback."
+
+/performance-reports/generate:
+post:
+  summary: Generate a new performance or sales report
+  description: Generates a new performance or sales report.
+  security:
+    - bearerAuth: []
+  requestBody:
+    description: The report generation details.
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+              description: The title of the report.
+              example: "Sales Report Q2"
+            metrics:
+              type: object
+              properties:
+                totalSales:
+                  type: number
+                  format: float
+                  description: The total sales amount.
+                  example: 120000.00
+                totalOrders:
+                  type: integer
+                  description: The total number of orders.
+                  example: 600
+                customerFeedback:
+                  type: string
+                  description: Summary of customer feedback.
+                  example: "Overall positive feedback."
+  responses:
+    '201':
+      description: Report generated successfully

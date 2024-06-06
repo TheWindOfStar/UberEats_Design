@@ -1,0 +1,277 @@
+openapi: 3.0.0
+info:
+  title: User Management API
+  version: 1.0.0
+  description: This is a simple API to handle user login.
+
+paths:
+
+#login and sign up
+  /Users/login:
+    post:
+      summary: User login
+      description: Authenticates a user and returns a token.
+      requestBody:
+        description: User credentials needed for login.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The user's username.
+                  example: "john_doe"
+                password:
+                  type: string
+                  description: The user's password.
+                  example: "password123"
+                role:
+                  type: string
+                  description: The user's role.
+                  example: "super admin, manager, delivery partner, delivery guy"
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT token for the authenticated user, expired in 24h.
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '401':
+          description: Unauthorized - invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message indicating why authentication failed.
+                    example: "Invalid username or password."
+        '400':
+          description: Bad request - missing or invalid parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message indicating what parameter is missing or invalid.
+                    example: "Username and password are required."
+
+  /Users/signup:
+    post:
+      summary: User sign-up
+      description: Authenticates a user and returns a token.
+      requestBody:
+        description: User need to sign-up their profile before login.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The user's username.
+                  example: "john_doe"
+                password:
+                  type: string
+                  description: The user's password.
+                  example: "password123"
+                email:
+                  type: string
+                  description: The user's email.
+                  example: "aaaaaaaaa@gmail.com"
+                role:
+                  type: string
+                  description: The user's role.
+                  example: "super admin, manager, delivery partner, delivery guy"
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT token for the authenticated user, expired in 24h.
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '400':
+          description: Bad request - missing or invalid parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message indicating what parameter is missing or invalid.
+                    example: "Missing parameters !."
+
+
+
+# User permission management
+  /Users/GetAllUsersByStoreId/{StoreId}:
+    get:
+      summary: Get a list of users
+      description: Retrieves a list of all users, only super admin and manager can do.
+      security:
+        - bearerAuth: [JWT-token]
+      responses:
+        '200':
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    userId:
+                      type: string
+                      description: The unique identifier for the user.
+                      example: "user123"
+                    name:
+                      type: string
+                      description: The name of the user.
+                      example: "John Doe"
+                    email:
+                      type: string
+                      description: The email of the user.
+                      example: "johndoe@example.com"
+                    role:
+                      type: string
+                      description: The role of the user.
+                      example: "manager"
+
+  /Users/AddNewUser:
+    post:
+      summary: Add a new user
+      description: Creates a new user with role, only admin and super admin can do.
+      security:
+        - bearerAuth: [Auth-token]
+      requestBody:
+        description: create new user with permissison.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the user.
+                  example: "John Doe"
+                email:
+                  type: string
+                  description: The email of the user.
+                  example: "johndoe@example.com"
+                password:
+                  type: string
+                  description: The password for the user.
+                  example: "password123"
+                role:
+                  type: string
+                  description: The role of the user.
+                  example: "manager"
+      responses:
+        '201':
+          description: User created successfully
+
+  /Users/UpdateUserProfile/{UserId}:
+    put:
+      summary: Update user
+      description: Updates an existing user.
+      security:
+        - bearerAuth: [Auth-token]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "user123"
+      requestBody:
+        description: The user data to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the user.
+                  example: "John Doe"
+                email:
+                  type: string
+                  description: The email of the user.
+                  example: "johndoe@example.com"
+                role:
+                  type: string
+                  description: The role of the user.
+                  example: "manager"
+      responses:
+        '200':
+          description: User updated successfully
+
+  /Users/DeleteUser/{UserId}:
+    delete:
+      summary: Delete user
+      description: Deletes an existing user, only super admin can do.
+      security:
+        - bearerAuth: [Auth-token]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "user123"
+      responses:
+        '204':
+          description: User deleted successfully
+
+  /ActivityLogByStoreId/{StoreId}:
+    get:
+      summary: Get activity log
+      description: Retrieves the activity log for all users.
+      security:
+        - bearerAuth: [Auth-token]
+      responses:
+        '200':
+          description: The activity log
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    logId:
+                      type: string
+                      description: The unique identifier for the log entry.
+                      example: "log123"
+                    userId:
+                      type: string
+                      description: The ID of the user who performed the action.
+                      example: "user123"
+                    action:
+                      type: string
+                      description: The action performed by the user.
+                      example: "User login, browing contract"
+                    timestamp:
+                      type: string
+                      format: date-time
+                      description: The time when the action was performed.
+                      example: "2024-06-05T14:48:00.000Z"

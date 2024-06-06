@@ -1,0 +1,177 @@
+openapi: 3.0.0
+info:
+  title: Analysis Management API
+  version: 1.0.0
+  description: API for managing statistical charts, customer feedback, and performance reports.
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
+
+paths:
+  /charts:
+    get:
+      summary: Get statistical charts
+      description: Retrieves different types of statistical charts.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of statistical charts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    chartId:
+                      type: string
+                      description: The unique identifier for the chart.
+                      example: "chart123"
+                    title:
+                      type: string
+                      description: The title of the chart.
+                      example: "Sales Performance"
+                    type:
+                      type: string
+                      description: The type of the chart.
+                      example: "Line"
+                    data:
+                      type: object
+                      description: The data used to generate the chart.
+                      properties:
+                        labels:
+                          type: array
+                          items:
+                            type: string
+                          example: ["January", "February", "March"]
+                        values:
+                          type: array
+                          items:
+                            type: number
+                          example: [100, 200, 150]
+
+    post:
+      summary: Configure statistical chart parameters
+      description: Configures the parameters of statistical charts.
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The chart configuration details.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title of the chart.
+                  example: "Sales Performance"
+                type:
+                  type: string
+                  description: The type of the chart.
+                  example: "Line"
+                data:
+                  type: object
+                  description: The data used to generate the chart.
+                  properties:
+                    labels:
+                      type: array
+                      items:
+                        type: string
+                      example: ["January", "February", "March"]
+                    values:
+                      type: array
+                      items:
+                        type: number
+                      example: [100, 200, 150]
+      responses:
+        '201':
+          description: Chart configuration created successfully
+
+  /reports/performance:
+    get:
+      summary: Get performance and sales reports
+      description: Retrieves performance and sales reports.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of performance and sales reports
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    reportId:
+                      type: string
+                      description: The unique identifier for the report.
+                      example: "report123"
+                    title:
+                      type: string
+                      description: The title of the report.
+                      example: "Sales Report Q1"
+                    metrics:
+                      type: object
+                      properties:
+                        totalSales:
+                          type: number
+                          format: float
+                          description: The total sales amount.
+                          example: 100000.00
+                        totalOrders:
+                          type: integer
+                          description: The total number of orders.
+                          example: 500
+                        customerFeedback:
+                          type: string
+                          description: Summary of customer feedback.
+                          example: "Overall positive feedback."
+
+  /reports/performance/generate:
+    post:
+      summary: Generate a new performance or sales report
+      description: Generates a new performance or sales report.
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The report generation details.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title of the report.
+                  example: "Sales Report Q2"
+                metrics:
+                  type: object
+                  properties:
+                    totalSales:
+                      type: number
+                      format: float
+                      description: The total sales amount.
+                      example: 120000.00
+                    totalOrders:
+                      type: integer
+                      description: The total number of orders.
+                      example: 600
+                    customerFeedback:
+                      type: string
+                      description: Summary of customer feedback.
+                      example: "Overall positive feedback."
+      responses:
+        '201':
+          description: Report generated successfully
