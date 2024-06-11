@@ -47,6 +47,10 @@ paths:
                       type: string
                       description: The access level required to view the document.
                       example: "Admin"
+                    documentURL:
+                      type: string
+                      description: The S3 URL which is keep the report.
+                      example: http:/south-amazon.com/sajkbfuo;safdnjnfahlkbfejfa,
 
     post:
       summary: Upload a sensitive document
@@ -73,10 +77,10 @@ paths:
                   type: string
                   description: The access level required to view the document.
                   example: "Admin"
-                content:
+                documentURL:
                   type: string
-                  description: The content of the document.
-                  example: "Base64 encoded document content"
+                  description: The S3 URL which is keep the report.
+                  example: http:/south-amazon.com/sajkbfuo;safdnjnfahlkbfejfa,
       responses:
         '201':
           description: Document uploaded successfully
@@ -114,10 +118,10 @@ paths:
                   type: string
                   description: The access level required to view the document.
                   example: "Admin"
-                content:
+                documentURL:
                   type: string
-                  description: The content of the document.
-                  example: "Base64 encoded document content"
+                  description: The S3 URL which is keep the report.
+                  example: http:/south-amazon.com/sajkbfuo;safdnjnfahlkbfejfa,
       responses:
         '200':
           description: Document updated successfully

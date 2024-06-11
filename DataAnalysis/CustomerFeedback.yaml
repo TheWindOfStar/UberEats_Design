@@ -1,4 +1,4 @@
-/feedback:
+/feedbacks:
 get:
   summary: Get customer feedback
   description: Retrieves customer feedback including ratings and comments.
